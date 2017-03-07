@@ -5,7 +5,7 @@
 import sys, pygame, math, ctypes, imageList, random
 from pygame.locals import*
 
-class Octopus:
+class Octopus(object):
 
 	def __init__(self,win_size):
 		pygame.sprite.Sprite.__init__(self)
@@ -70,6 +70,7 @@ def swimAround():
 
 	# create octopus object
 	octy = Octopus(size)
+	print(size)
 
 	iters = 0
 	max_iters = 20 # used for animating movement -- image changes every 20 iterations
