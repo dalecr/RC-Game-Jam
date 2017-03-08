@@ -3,6 +3,7 @@
 # created 3/3/2017 by Connor Dale
 
 import sys, pygame, math, ctypes, imageList, random
+from levels import LEVELS_SPEC
 from pygame.locals import*
 
 
@@ -46,8 +47,6 @@ class Octopus(object):
 		# set starting speed (stationary)
 		self.speed = [20,0]
 		self.jump_speed = -10
-
-		self.Level = None
 
 	def move(self):
 		# self.x += self.speed[0]
@@ -97,7 +96,7 @@ class Level():
 		Create a child class for each level with level-specific
 		info. """
  
-	def __init__(self, player):
+	def __init__(self, player, level_spec):
 		""" Constructor. Pass in a handle to player. Needed for when moving
 			platforms collide with the player. """
 		self.platform_list = pygame.sprite.Group()
@@ -107,6 +106,12 @@ class Level():
 		# How far this world has been scrolled left/right
 		self.world_shift = 0
  
+		self.level_limit = -1000
+ 
+		# Go through the array above and add platforms
+		for block in level_spec:
+			self.platform_list.add(block)
+ 
 	# Update everythign on this level
 	def update(self):
 		""" Update everything in this level."""
@@ -115,9 +120,6 @@ class Level():
  
 	def draw(self, screen):
 		""" Draw everything on this level. """
- 
-		# Draw the background
-		screen.fill(BLUE)
  
 		# Draw all the sprite lists that we have
 		self.platform_list.draw(screen)
@@ -137,34 +139,6 @@ class Level():
 		for enemy in self.enemy_list:
 			enemy.rect.x += shift_x
  
-
-
-# Create platforms for the level
-class Level_01(Level):
-	""" Definition for level 1. """
- 
-	def __init__(self, player):
-		""" Create level 1. """
- 
-		# Call the parent constructor
-		Level.__init__(self, player)
- 
-		self.level_limit = -1000
- 
-		# Array with width, height, x, and y of platform
-		level = [[210, 70, 500, 500],
-				 [210, 70, 800, 400],
-				 [210, 70, 1000, 500],
-				 [210, 70, 1120, 280],
-				 ]
- 
-		# Go through the array above and add platforms
-		for platform in level:
-			block = Platform(platform[0], platform[1])
-			block.rect.x = platform[2]
-			block.rect.y = platform[3]
-			block.player = self.player
-			self.platform_list.add(block)
 
 def swimAround():
 	'''
@@ -192,8 +166,7 @@ def swimAround():
 	octy = Octopus(size)
 	print(size)
 
-	level_list = []
-	level_list.append(Level_01(octy))
+	level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
 	curent_level_no = 0
 	current_level = level_list[curent_level_no]
 	active_sprite_list = pygame.sprite.Group()

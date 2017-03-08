@@ -1,5 +1,4 @@
 import pygame
-from levels import LEVELS
 
 
 BLACK = (0, 0, 0)
@@ -50,19 +49,20 @@ class Garden(pygame.sprite.Sprite):
     height = 1000  # TODO: screen height
     width = 10
 
-    def __init(self, x):
+    def __init__(self, x):
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(WHITE)
 
         self.rect = self.image.get_rect()
         self.rect.y = 0
         self.rect.x = x
+        super().__init__()
 
 
 WIDTH, HEIGHT = 1920, 1080
 
 
-LEVELS = [
+LEVELS_SPEC = [
     [
         DumbWall(200, 200, 10, HEIGHT - 200),
         DumbWall(500, 200, 10, HEIGHT - 200),
