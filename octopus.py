@@ -45,7 +45,7 @@ class Octopus(object):
 		self.rect[1] = self.y
 
 		# set starting speed (stationary)
-		self.speed = [20,0]
+		self.speed = [15,0]
 		self.jump_speed = -10
 
 	def move(self):
@@ -64,13 +64,10 @@ class Octopus(object):
 	def move_left(self):
 		# self.speed[0] = 20
 		self.x-=self.speed[0]
+
 	def move_right(self):
 		# self.speed[0] = 20
 		self.x+=self.speed[0]
-	def stop(self):
-			self.change_x(0)
-
-
 
 	def draw(self,surface):
 		surface.blit(self.image, (self.x, self.y))
@@ -147,10 +144,10 @@ def swimAround():
 	pygame.init()
 
 	bg = pygame.image.load("images/testbg.jpg")
-	bg_size = bg.get_size()
+	size = bg.get_size()
 	bg_rect = bg.get_rect()
-	screen = pygame.display.set_mode(bg_size)
-	w,h = bg_size
+	screen = pygame.display.set_mode(size)
+	w,h = size
 	x = 0
 	y = 0
 	x1 = w
@@ -158,13 +155,10 @@ def swimAround():
 	# create game window
 	# white = (255, 255, 255) # color of background
 	# screen = pygame.display.set_mode((0,0),FULLSCREEN)
-	size = screen.get_size()
-
-
+	# size = screen.get_size()
 
 	# create octopus object
 	octy = Octopus(size)
-	print(size)
 
 	level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
 	curent_level_no = 0
@@ -178,9 +172,6 @@ def swimAround():
 	iters = 0
 	max_iters = 3 # used for animating movement -- image changes every 20 iterations
 	while True:
-		# screen.fill(white) # fill background
-		screen.blit(bg,bg_rect)
-
 		# check for events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -199,8 +190,6 @@ def swimAround():
 		elif pressedKeys[pygame.K_RIGHT]: # Move right
 			# octy.speed[0] = 2
 			octy.move_right()
-			x1 -= 2
-			x -= 2
 			octy.image = octy.rightImages.current.data
 		# else: # Stand still
 			# octy.speed[0] = 0
@@ -213,10 +202,23 @@ def swimAround():
 			octy.move_right()
 			diff = octy.rect[2]
 			current_level.shift_world(octy.speed[0])
+			x1 += octy.speed[0]
+			x += octy.speed[0]
+			if x > w:
+				x = -w
+			if x1 > w:
+				x1 = -w
 		elif octy.x + octy.rect[2] >= int(.9*size[0]):
 			octy.move_left()
 			diff = octy.rect[2]
 			current_level.shift_world(-octy.speed[0])
+			x1 -= octy.speed[0]
+			x -= octy.speed[0]
+			if x < -w:
+				x = w
+			if x1 < -w:
+				x1 = w
+
 		if octy.y <= 0:
 			octy.speed[1] = 2
 		elif octy.y + octy.rect[3] >= size[1]:
@@ -225,18 +227,14 @@ def swimAround():
 		active_sprite_list.update()
 		current_level.update()
 
-		#for obj in act:
 		# move the octopus
 		octy.move()
 
+		# draw the background
 		screen.blit(bg,(x,y))
 		screen.blit(bg,(x1,y1))
-		if x < -w:
-			x = w
-		if x1 < -w:
-			x1 = w
 
-		# change image for animation
+		# change octopus image for animation
 		if iters == max_iters:
 			octy.leftImages.update_current()
 			octy.rightImages.update_current()
@@ -244,8 +242,7 @@ def swimAround():
 		else:
 			iters += 1
 
-		# draw the octopus in the window
-		screen.blit(bg,bg_rect)
+		# draw the octopus and other objects
 		current_level.draw(screen)
 		active_sprite_list.draw(screen)
 		octy.draw(screen)
