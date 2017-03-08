@@ -137,13 +137,13 @@ class Level():
 			enemy.rect.x += shift_x
  
 
-def swimAround():
+def main():
 	'''
 	Creates a pygame window with a user-controlled octopus that can move left, right, and up
 	'''
 	pygame.init()
 
-	bg = pygame.image.load("images/testbg.jpg")
+	bg = pygame.image.load("images/undersea.png")
 	size = bg.get_size()
 	bg_rect = bg.get_rect()
 	screen = pygame.display.set_mode(size)
@@ -251,13 +251,6 @@ def swimAround():
 
 		pygame.display.flip()
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-def main():
-	## this is an octopus that moves around the screen
-	swimAround()
 
 if __name__=="__main__":
 	main()
