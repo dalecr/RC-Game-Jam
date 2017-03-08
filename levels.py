@@ -13,7 +13,6 @@ BLUE = (50, 50, 255)
 # Collectible('CRAB', x, y), # width and height will be a default size
 # Garden(x=1000)  # only needs x position
 
-
 class _wall(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         super().__init__()
@@ -26,10 +25,14 @@ class _wall(pygame.sprite.Sprite):
 
 class DumbWall(_wall):
     "Wall that blocks passage"
+    def collision_detected(self):
+        print("Collided with Dumbwall")
 
 
 class DangerWall(_wall):
     "Wall that kills the octopus"
+    def collision_detected(self):
+        print("Collided with Dangerwall")
 
 
 class Collectible(pygame.sprite.Sprite):
@@ -44,6 +47,8 @@ class Collectible(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
 
+    def collision_detected(self):
+        print("Just got a collectible")
 
 class Garden(pygame.sprite.Sprite):
     height = 1000  # TODO: screen height
@@ -58,6 +63,8 @@ class Garden(pygame.sprite.Sprite):
         self.rect.x = x
         super().__init__()
 
+    def collision_detected(self):
+        print("Now inside the garden")
 
 WIDTH, HEIGHT = 1920, 1080
 
