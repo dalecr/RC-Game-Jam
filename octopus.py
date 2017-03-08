@@ -5,6 +5,7 @@
 import sys, pygame, math, ctypes, imageList, random
 from pygame.locals import*
 
+
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -12,7 +13,8 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-class Octopus:
+class Octopus(object):
+
 
 	def __init__(self,win_size):
 		pygame.sprite.Sprite.__init__(self)
@@ -188,6 +190,7 @@ def swimAround():
 
 	# create octopus object
 	octy = Octopus(size)
+	print(size)
 
 	level_list = []
 	level_list.append(Level_01(octy))
