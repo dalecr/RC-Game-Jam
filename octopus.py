@@ -4,8 +4,9 @@
 
 import sys, pygame, math, ctypes, imageList, random
 from pygame.locals import*
+from collision_detection import Enemy
 
-class Octopus:
+class Octopus(pygame.sprite.Sprite):
 
 	def __init__(self,win_size):
 		pygame.sprite.Sprite.__init__(self)
@@ -23,13 +24,13 @@ class Octopus:
 		self.rightImages.set_current()
 		self.image = self.rightImages.current.data # image that is displayed
 		self.rect = self.image.get_rect() # rect used for collision detection
-		
+
 		self.floor = win_size[1]-self.rect[3]-1
 
 		# set starting position
 		self.x = int(win_size[0]/2) # octopus starts halfway across the screen
 		self.y = self.floor # octopus starts at the bottom of the screen
-		
+
 		# set rect coordinates to match image position
 		self.rect[0] = self.x
 		self.rect[1] = self.y
@@ -70,6 +71,10 @@ def swimAround():
 
 	# create octopus object
 	octy = Octopus(size)
+        enemy_group = pygame.sprite.Group()
+        for val in range(10):
+            enemy  = Enemy(100*val, 100*val)
+            enemy_group.add(enemy)
 
 	iters = 0
 	max_iters = 20 # used for animating movement -- image changes every 20 iterations
@@ -79,9 +84,9 @@ def swimAround():
 		# check for events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				pygame.quit() 
+				pygame.quit()
 				sys.exit()
-	
+
 		pressedKeys = pygame.key.get_pressed()
 
 		if pressedKeys[pygame.K_ESCAPE]: # Exit
@@ -108,12 +113,20 @@ def swimAround():
 			octy.speed[1] = 2
 		elif octy.y + octy.rect[3] >= size[1]:
 			octy.speed[1] = -2
-		
+
+                # check for collision with enemy
+                collision_list = pygame.sprite.spritecollide(octy,
+                        enemy_group, True)
+                for coll in collision_list:
+                    coll.collision_happened()
 		# move the octopus
 		octy.move()
 
+                # for enemy in enemy_group:
+                    # enemy.move()
 		# draw the octopus in the window
 		octy.draw(screen)
+                enemy_group.draw(screen)
 
 		# change image for animation
 		if iters == max_iters:
