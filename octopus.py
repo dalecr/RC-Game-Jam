@@ -192,6 +192,9 @@ class Level():
 
         if pygame.sprite.spritecollideany(thing, self.killer_list, False):
             GAME_STATE.game_over = True
+            #collision_list = pygame.sprite.spritecollide(thing, self.killer_list, False)
+            #rect = collision_list[0].rect
+            #print("x y rect", rect.x, rect.y, rect.left, rect.top)
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
@@ -337,14 +340,15 @@ def main():
 
         #change position if blocked by wall
         if octy.blocked:
-            if pressedKeys[pygame.K_LEFT]: # bounce back right
-                octy.x += 20
-                # octy.move_right()
-                octy.image = octy.leftImages.current.data
-            elif pressedKeys[pygame.K_RIGHT]:
-                octy.x -= 20
-                # octy.move_left()
-                octy.image = octy.rightImages.current.data
+            if not octy.y < octy.blocked[0] and not octy.y > octy.blocked[3]:
+                if pressedKeys[pygame.K_LEFT]: # bounce back right
+                    octy.x += 20
+                    # octy.move_right()
+                    octy.image = octy.leftImages.current.data
+                elif pressedKeys[pygame.K_RIGHT]:
+                    octy.x -= 20
+                    # octy.move_left()
+                    octy.image = octy.rightImages.current.data
 
             if pressedKeys[pygame.K_UP]: #go down
                 # octy.y += 20
