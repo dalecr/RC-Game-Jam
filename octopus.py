@@ -59,20 +59,22 @@ class Octopus(object):
         # update Rect object position
         self.rect[0] = self.x
         self.rect[1] = self.y
-        # if self.rect.colliderect()
 
     def move_left(self):
+
         # self.speed[0] = 20
-        #if self.blocked == False:
+
         self.x-=self.speed[0]
         #else:
         #    self.x+=1
         #    self.blocked = False
 
     def move_right(self):
+
         # self.speed[0] = 20
         #self.x+=self.speed[0]
         #if self.blocked == False:
+
         self.x+=self.speed[0]
         #else:
         #    self.x-=1
@@ -82,20 +84,7 @@ class Octopus(object):
         surface.blit(self.image, (self.x, self.y))
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class Platform(pygame.sprite.Sprite):
-    """ Platform the user can jump on """
-
-    def __init__(self, width, height):
-        """ Platform constructor. Assumes constructed with user passing in
-            an array of 5 numbers like what's defined at the top of this code.
-            """
-        super().__init__()
-
-        self.image = pygame.Surface([width, height])
-        self.image.fill(GREEN)
-
-        self.rect = self.image.get_rect()
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 class Level():
@@ -162,6 +151,8 @@ class Level():
     else: return collision_list_walls[0]]
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 def main():
     '''
@@ -178,10 +169,6 @@ def main():
     y = 0
     x1 = w
     y1 = 0
-    # create game window
-    # white = (255, 255, 255) # color of background
-    # screen = pygame.display.set_mode((0,0),FULLSCREEN)
-    # size = screen.get_size()
 
     # create octopus object
     octy = Octopus(size)
@@ -191,11 +178,9 @@ def main():
     current_level = level_list[curent_level_no]
     active_sprite_list = pygame.sprite.Group()
 
-    # active_sprite_list.add(octy)
-
     clock = pygame.time.Clock()
     iters = 0
-    max_iters = 3 # used for animating movement -- image changes every 20 iterations
+    max_iters = 3 # used for animating movement -- image changes every max_iters iterations
     while True:
         # check for events
         for event in pygame.event.get():
@@ -272,7 +257,6 @@ def main():
         octy.blocked = current_level.detect_collisions(octy)
         #print ('octy.blocked is ', octy.blocked)
 
-        screen.blit(bg,bg_rect)
         current_level.draw(screen)
         active_sprite_list.draw(screen)
         octy.draw(screen)
