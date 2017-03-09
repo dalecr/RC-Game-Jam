@@ -1,7 +1,7 @@
 # octopus.py
 # experimental game code for game jam
 # created 3/3/2017 by Connor Dale
-
+ 
 import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
@@ -23,14 +23,9 @@ class death(object):
 
         self.x = 200
         self.y = 200
-<<<<<<< HEAD
         self.playedSound = False;
-    
-    def draw(self,surface,octopus):
-=======
 
     def draw(self,surface):
->>>>>>> e3fb4f4d645f3df1bc9c61627b0ef5a6417d8ecf
         # draws the octopus on the given surface
         self.image = self.images.current.data
         self.images.update_current()
@@ -359,17 +354,8 @@ def main():
 
         # draw the octopus and other objects
         current_level.draw(screen)
-<<<<<<< HEAD
-        draw_score(screen, score, size)
-        #d.draw(screen,octy)
         octy.draw(screen)
-     
-=======
         draw_score(screen, GAME_STATE.score, size)
-        octy.draw(screen)
-        #d.draw(screen)
-
->>>>>>> e3fb4f4d645f3df1bc9c61627b0ef5a6417d8ecf
 
         clock.tick(60)
 
