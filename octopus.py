@@ -56,7 +56,23 @@ class death(object):
         octopus.rect = octopus.image.get_rect() # rect used for collision detection
 
 
-                
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# class replayButton():
+
+#     def __init__(self,x,y):
+
+
+#     def callback(self):
+
+#     def pushed(self):
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 class Octopus(object):
 
@@ -200,6 +216,7 @@ class Level():
             collision.collision_detected()
             if collision.is_end:
                 GAME_STATE.current_level_index += 1
+                GAME_STATE.finished = True
                 print("you finished, hell yeah!!!!")
 
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
@@ -220,7 +237,7 @@ class GameState():
     score = 0
     current_level_index = 0
     end_level = 0
-    finished = False
+    finished = True
     game_over = False
 
 
@@ -237,6 +254,18 @@ def draw_score(screen, score, ssize):
 
 GAME_STATE = GameState()
 
+
+def next_level(screen):
+    # create octopus and death objects
+    octy = Octopus(screen.get_size())
+    d = death(screen, octy)
+
+    level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
+    current_level = level_list[GAME_STATE.current_level_index]
+
+    return octy,d,current_level
+
+
 def main():
     '''
     Creates a pygame window with a user-controlled octopus that can move left, right, and up
@@ -248,23 +277,30 @@ def main():
     bg_rect = bg.get_rect()
     screen = pygame.display.set_mode(size)
     w,h = size
-    x = 0
-    y = 0
-    x1 = w
-    y1 = 0
+    # x = 0
+    # y = 0
+    # x1 = w
+    # y1 = 0
 
-    # create octopus object
-    octy = Octopus(size)
-    d = death(screen, octy)
+    # # create octopus and death objects
+    # octy = Octopus(size)
+    # d = death(screen, octy)
 
-    level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
-    current_level = level_list[GAME_STATE.current_level_index]
+    # level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
+    # current_level = level_list[GAME_STATE.current_level_index]
 
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
     while True:
-        
+        if GAME_STATE.finished:
+            octy,d,current_level = next_level(screen)
+            x = 0
+            y = 0
+            x1 = w
+            y1 = 0
+            GAME_STATE.finished = False
+
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -351,6 +387,11 @@ def main():
 
         if GAME_STATE.game_over:
             d.draw(screen, octy)
+
+        # if pressedKeys[pygame.K_BACKSPACE]: # restart level
+        #     GAME_STATE.score -= 10
+        #     GAME_STATE.finished = True
+        #     GAME_STATE.game_over = False
 
         clock.tick(60)
 
