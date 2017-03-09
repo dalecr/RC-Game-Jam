@@ -144,8 +144,6 @@ class Level():
         #for collision in collision_list:
         #    collision.collision_detected()
 
-
-
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
         for collision in collision_list:
