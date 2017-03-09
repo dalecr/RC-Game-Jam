@@ -5,14 +5,8 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (50, 50, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
-
-
-# DumbWall(x, y, width, height),
-# DangerWall(x, y, width, height),
-# DangerWall(x, y, width, height),
-# Collectible('CRAB', x, y), # width and height will be a default size
-# Garden(x=1000)  # only needs x position
 
 class _wall(pygame.sprite.Sprite):
     is_fixed = True
@@ -51,7 +45,7 @@ class Collectible(pygame.sprite.Sprite):
         super().__init__()
         # TODO: choose an image based on the name
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(BLACK)
+        self.image.fill(GREEN)
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -82,12 +76,14 @@ WIDTH, HEIGHT = 1200, 700
 
 LEVELS_SPEC = [
     [
+        Collectible('crab', 100, HEIGHT - Collectible.height - 200),
+        Collectible('crab', 100, HEIGHT - Collectible.height - 50),
         DumbWall(800, 250),
         DumbWall(1200, 250),
         DangerWall(1600, 0),
-        Collectible('crab', 2000, HEIGHT - Collectible.height),
+        Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
         DangerWall(2200, 250),
-        Collectible('crab', 1600, HEIGHT - Collectible.height),
+        Collectible('crab', 1600, HEIGHT - Collectible.height - 50),
         DangerWall(2800, 0),
         Garden(2920),
     ],
