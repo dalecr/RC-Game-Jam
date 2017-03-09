@@ -25,14 +25,41 @@ class death(object):
 
         self.x = 200
         self.y = 200
+        self.playedSound = False;
     
-    def draw(self,surface):
+    def draw(self,surface,octopus):
         # draws the octopus on the given surface
         self.image = self.images.current.data
         self.images.update_current()
         surface.blit(self.image, (self.x, self.y))
+        self.play()
+        self.kill(octopus)
+
+    def play(self):
+        if self.playedSound == False:
+            sfx = ['supermario.mp3','wilhelm_scream.mp3']
+            import random
+            mp3 = random.choice(sfx) 
+            pygame.mixer.music.load("sfx/" + mp3)
+            pygame.mixer.music.play(0)
+            self.playedSound = True
+
+    def kill(self,octopus):
+        if(self.playedSound == True):
+            for i in range(3) :
+                dirname = "images/you_died/"
+                imgName = dirname + "deado-" + str(i) + ".png"
+                img = pygame.image.load(imgName)
+                img = pygame.transform.rotate(img,180)
+                
+                octopus.leftImages.append(img);
 
 
+        octopus.image = octopus.leftImages.current.data # image that is displayed
+        octopus.rect = octopus.image.get_rect() # rect used for collision detection
+
+
+                
 
 class Octopus(object):
 
@@ -330,8 +357,8 @@ def main():
         # draw the octopus and other objects
         current_level.draw(screen)
         draw_score(screen, score, size)
+        #d.draw(screen,octy)
         octy.draw(screen)
-        #d.draw(screen)
      
 
         clock.tick(60)
