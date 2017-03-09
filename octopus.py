@@ -165,16 +165,17 @@ class Level():
     def detect_collisions(self, thing):
 
         kill_octy = pygame.sprite.spritecollideany(thing, self.killer_list, False)
-        #kill_octy = False
-        #for collision in collision_list:
-        #    collision.collision_detected()
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
         for collision in collision_list:
             collision.collision_detected()
+            if collision.is_end:
+                GAME_STATE.current_level_index += 1
+                print("you finished, hell yeah!!!!")
+
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
-            print(wall_parameters)
+            # print(wall_parameters)
 
         collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
         for collision in collision_list:
@@ -281,8 +282,6 @@ def main():
         elif octy.y + octy.rect[3] >= size[1]:
             octy.speed[1] = -2
 
-
-        print('player position', octy.x, octy.y)
         current_level.update()
 
         # move the octopus
@@ -303,14 +302,10 @@ def main():
 
         # return parameters of wall if blocked
         octy.blocked, octy.dead = current_level.detect_collisions(octy)
-        print('octy.dead')
-        
 
 
         #change position if blocked by wall
         if octy.blocked:
-            print ('octy.blocked is ', octy.blocked)
-
             if pressedKeys[pygame.K_LEFT]: # bounce back right
                 octy.x += 20
                 # octy.move_right()

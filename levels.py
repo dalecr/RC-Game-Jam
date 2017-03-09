@@ -11,6 +11,7 @@ GREEN = (0, 255, 0)
 class _wall(pygame.sprite.Sprite):
     is_fixed = True
     is_killer = False
+    is_end = False
     color = BLACK
 
     def __init__(self, x, y, width=40, height=450):
@@ -62,6 +63,7 @@ class Garden(pygame.sprite.Sprite):
     width = 10
     is_fixed = True
     is_killer = False
+    is_end = True
 
     def __init__(self, x):
         self.image = pygame.Surface([self.width, self.height])
