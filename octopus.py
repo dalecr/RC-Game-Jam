@@ -1,14 +1,14 @@
 # octopus.py
 # experimental game code for game jam
 # created 3/3/2017 by Connor Dale
-
+ 
 import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
 
 class death(object):
 
-    def __init__(self,win_size, octopus):
+    def __init__(self,win, octopus):
         pygame.sprite.Sprite.__init__(self)
         self.images = imageList.CircularLinkedList()
 
@@ -20,14 +20,14 @@ class death(object):
         self.images.set_current()
         self.image = self.images.current.data # image that is displayed
 
-        self.x = octopus.x
-        self.y = octopus.y
+        self.x = int(win.get_size()[0]/2 - self.image.get_rect()[2]/2)#octopus.x
+        self.y = int(win.get_size()[1]/2 - self.image.get_rect()[3]/2)#octopus.y
         self.playedSound = False;
 
     def draw(self,surface,octopus):
         # draws the octopus on the given surface
-        self.image = self.images.current.data
         self.images.update_current()
+        self.image = self.images.current.data
         surface.blit(self.image, (self.x, self.y))
         self.play()
         self.kill(octopus)
@@ -36,7 +36,7 @@ class death(object):
         if self.playedSound == False:
             sfx = ['supermario.mp3','wilhelm_scream.mp3']
             import random
-            mp3 = random.choice(sfx)
+            mp3 = random.choice(sfx) 
             pygame.mixer.music.load("sfx/" + mp3)
             pygame.mixer.music.play(0)
             self.playedSound = True
@@ -48,7 +48,7 @@ class death(object):
                 imgName = dirname + "deado-" + str(i) + ".png"
                 img = pygame.image.load(imgName)
                 img = pygame.transform.rotate(img,180)
-
+                
                 octopus.leftImages.append(img);
 
 
@@ -56,7 +56,7 @@ class death(object):
         octopus.rect = octopus.image.get_rect() # rect used for collision detection
 
 
-
+                
 
 class Octopus(object):
 
@@ -99,13 +99,14 @@ class Octopus(object):
     def fall(self):
         # moves the octopus downwards/upwards and updates its vertical speed and rect
         self.y += self.speed[1]
-        # elif self.speed[1] == self.jump_speed or self.speed[1] == 2: # octopus is jumping or hitting the ceiling
-            # self.speed[1] = 10 # gravity
         if self.y >= self.floor: # octopus is hitting the floor
             self.speed[1] = 0
             self.y = self.floor - 2
         else:
             self.speed[1] = 10
+
+        if GAME_STATE.game_over:
+            self.speed[1] = -10
         # update Rect object position
         self.rect[0] = self.x
         self.rect[1] = self.y
@@ -192,16 +193,14 @@ class Level():
 
         if pygame.sprite.spritecollideany(thing, self.killer_list, False):
             GAME_STATE.game_over = True
-            #collision_list = pygame.sprite.spritecollide(thing, self.killer_list, False)
-            #rect = collision_list[0].rect
-            #print("x y rect", rect.x, rect.y, rect.left, rect.top)
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
         for collision in collision_list:
             collision.collision_detected()
             if collision.is_end:
-                GAME_STATE.finished_level = True
+                GAME_STATE.current_level_index += 1
+                print("you finished, hell yeah!!!!")
 
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
             # print(wall_parameters)
@@ -220,9 +219,8 @@ class Level():
 class GameState():
     score = 0
     current_level_index = 0
-    total_levels = 0
-    finished_level = False
-    finished_game = False
+    end_level = 0
+    finished = False
     game_over = False
 
 
@@ -257,32 +255,16 @@ def main():
 
     # create octopus object
     octy = Octopus(size)
+    d = death(screen, octy)
 
     level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
-    GAME_STATE.total_levels = len(level_list)
     current_level = level_list[GAME_STATE.current_level_index]
 
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
-    while not GAME_STATE.finished_game:
-
-        if GAME_STATE.game_over:
-            d = death(screen, octy)
-            d.draw(screen, octy)
-
-        if GAME_STATE.finished_level:
-            GAME_STATE.current_level_index += 1
-            if GAME_STATE.current_level_index == GAME_STATE.total_levels:
-                print("YOU WON MODAFACKAAAAAAA")
-                GAME_STATE.finished_game = True
-            else:
-                x, y, y1 = (0, 0, 0)
-                x1 = w
-                GAME_STATE.score = 0
-                current_level = level_list[GAME_STATE.current_level_index]
-                GAME_STATE.finished_level = False
-
+    while True:
+        
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -294,12 +276,10 @@ def main():
         if pressedKeys[pygame.K_ESCAPE]: # Exit
             pygame.quit()
             sys.exit()
-        elif pressedKeys[pygame.K_LEFT]: # Move left
-            # octy.speed[0] = -2
+        elif pressedKeys[pygame.K_LEFT] and not GAME_STATE.game_over: # Move left
             octy.move_left()
             octy.image = octy.leftImages.current.data
-        elif pressedKeys[pygame.K_RIGHT]: # Move right
-            # octy.speed[0] = 2
+        elif pressedKeys[pygame.K_RIGHT] and not GAME_STATE.game_over: # Move right
             octy.move_right()
             octy.image = octy.rightImages.current.data
         if pressedKeys[pygame.K_UP]: # Jump upwards
@@ -336,10 +316,6 @@ def main():
         # move the octopus
         octy.fall()
 
-        # draw the background
-        screen.blit(bg,(x,y))
-        screen.blit(bg,(x1,y1))
-
         # change octopus image for animation
         if iters == max_iters:
             octy.leftImages.update_current()
@@ -355,28 +331,26 @@ def main():
 
         #change position if blocked by wall
         if octy.blocked:
-            if not octy.y < octy.blocked[0] and not octy.y > octy.blocked[3]:
-                if pressedKeys[pygame.K_LEFT]: # bounce back right
-                    octy.x += 20
-                    # octy.move_right()
-                    octy.image = octy.leftImages.current.data
-                elif pressedKeys[pygame.K_RIGHT]:
-                    octy.x -= 20
-                    # octy.move_left()
-                    octy.image = octy.rightImages.current.data
-
+            if pressedKeys[pygame.K_LEFT]: # bounce back right
+                octy.x += 20
+            elif pressedKeys[pygame.K_RIGHT]:
+                octy.x -= 20
             if pressedKeys[pygame.K_UP]: #go down
-                # octy.y += 20
                 octy.speed[1] = 0
             else:
-                # octy.y -= 50
                 octy.speed[1] = 0
 
+        # draw the background
+        screen.blit(bg,(x,y))
+        screen.blit(bg,(x1,y1))
 
         # draw the octopus and other objects
         current_level.draw(screen)
         octy.draw(screen)
         draw_score(screen, GAME_STATE.score, size)
+
+        if GAME_STATE.game_over:
+            d.draw(screen, octy)
 
         clock.tick(60)
 
