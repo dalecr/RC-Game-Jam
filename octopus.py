@@ -147,8 +147,10 @@ class Level():
         for collision in collision_list:
             collision.collision_detected()
 
-        if len(collision_list_walls) > 0: return None
-    else: return collision_list_walls[0]]
+        if len(collision_list_walls) > 0:
+            return collision_list_walls[0]
+        else:
+            return None
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,6 +164,7 @@ def main():
 
     bg = pygame.image.load("images/undersea.png")
     size = bg.get_size()
+    print(size)
     bg_rect = bg.get_rect()
     screen = pygame.display.set_mode(size)
     w,h = size
