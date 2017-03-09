@@ -3,7 +3,7 @@
 # created 3/3/2017 by Connor Dale
 
 import sys, pygame, math, ctypes, imageList, random
-from levels import LEVELS_SPEC
+from levels import LEVELS_SPEC, Collectible
 from pygame.locals import*
 
 
@@ -33,13 +33,13 @@ class Octopus(object):
 		self.rightImages.set_current()
 		self.image = self.rightImages.current.data # image that is displayed
 		self.rect = self.image.get_rect() # rect used for collision detection
-		
+
 		self.floor = win_size[1]-self.rect[3]-1
 
 		# set starting position
 		self.x = int(win_size[0]/2) # octopus starts halfway across the screen
 		self.y = self.floor # octopus starts at the bottom of the screen
-		
+
 		# set rect coordinates to match image position
 		self.rect[0] = self.x
 		self.rect[1] = self.y
@@ -76,66 +76,67 @@ class Octopus(object):
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Platform(pygame.sprite.Sprite):
 	""" Platform the user can jump on """
- 
+
 	def __init__(self, width, height):
 		""" Platform constructor. Assumes constructed with user passing in
 			an array of 5 numbers like what's defined at the top of this code.
 			"""
 		super().__init__()
- 
+
 		self.image = pygame.Surface([width, height])
 		self.image.fill(GREEN)
- 
+
 		self.rect = self.image.get_rect()
 
 class Level():
 	""" This is a generic super-class used to define a level.
 		Create a child class for each level with level-specific
 		info. """
- 
+
 	def __init__(self, player, level_spec):
 		""" Constructor. Pass in a handle to player. Needed for when moving
 			platforms collide with the player. """
 		self.platform_list = pygame.sprite.Group()
 		self.enemy_list = pygame.sprite.Group()
 		self.player = player
- 
+		self.level_spec = level_spec
+
 		# How far this world has been scrolled left/right
 		self.world_shift = 0
- 
+
 		self.level_limit = -1000
- 
+
 		# Go through the array above and add platforms
 		for block in level_spec:
 			self.platform_list.add(block)
- 
+
 	# Update everythign on this level
 	def update(self):
 		""" Update everything in this level."""
 		self.platform_list.update()
 		self.enemy_list.update()
- 
+
 	def draw(self, screen):
 		""" Draw everything on this level. """
- 
+
 		# Draw all the sprite lists that we have
 		self.platform_list.draw(screen)
 		self.enemy_list.draw(screen)
- 
+
 	def shift_world(self, shift_x):
 		""" When the user moves left/right and we need to scroll
 		everything: """
- 
+
 		# Keep track of the shift amount
 		self.world_shift += shift_x
- 
+
 		# Go through all the sprite lists and shift
 		for platform in self.platform_list:
 			platform.rect.x += shift_x
- 
+
 		for enemy in self.enemy_list:
 			enemy.rect.x += shift_x
- 
+
 
 def main():
 	'''
@@ -175,9 +176,9 @@ def main():
 		# check for events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				pygame.quit() 
+				pygame.quit()
 				sys.exit()
-	
+
 		pressedKeys = pygame.key.get_pressed()
 
 		if pressedKeys[pygame.K_ESCAPE]: # Exit
@@ -223,7 +224,7 @@ def main():
 			octy.speed[1] = 2
 		elif octy.y + octy.rect[3] >= size[1]:
 			octy.speed[1] = -2
-		
+
 		active_sprite_list.update()
 		current_level.update()
 
@@ -243,6 +244,13 @@ def main():
 			iters += 1
 
 		# draw the octopus and other objects
+		disappear = {Collectible: True}.get(type(current_level.level_spec), False)
+
+		collision_list = pygame.sprite.spritecollide(octy,
+                        current_level.platform_list, disappear)
+		for collision in collision_list:
+			collision.collision_detected()
+		screen.blit(bg,bg_rect)
 		current_level.draw(screen)
 		active_sprite_list.draw(screen)
 		octy.draw(screen)
