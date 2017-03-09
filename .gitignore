@@ -67,3 +67,4 @@ app.db
 wikiwoods.db
 *.db
 *.bz2
+venv
