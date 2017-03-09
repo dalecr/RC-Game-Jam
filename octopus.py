@@ -8,10 +8,9 @@ from pygame.locals import*
 
 class death(object):
 
-    def __init__(self,win_size):
+    def __init__(self,win_size, octopus):
         pygame.sprite.Sprite.__init__(self)
         self.images = imageList.CircularLinkedList()
-
 
         for i in range(4) :
             dirname = "images/you_died/"
@@ -21,11 +20,11 @@ class death(object):
         self.images.set_current()
         self.image = self.images.current.data # image that is displayed
 
-        self.x = 200
-        self.y = 200
+        self.x = octopus.x
+        self.y = octopus.y
         self.playedSound = False;
 
-    def draw(self,surface):
+    def draw(self,surface,octopus):
         # draws the octopus on the given surface
         self.image = self.images.current.data
         self.images.update_current()
@@ -262,7 +261,10 @@ def main():
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
-    while not GAME_STATE.game_over:
+    while True:
+        if GAME_STATE.game_over:
+            d = death(screen, octy)
+            d.draw(screen, octy)
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
