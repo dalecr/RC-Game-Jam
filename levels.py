@@ -17,7 +17,9 @@ class _wall(pygame.sprite.Sprite):
     def __init__(self, x, y, width=40, height=450):
         super().__init__()
         self.image = pygame.Surface([width, height])
-        self.image = pygame.image.load(self.pic)
+        tile = pygame.image.load(self.pic)
+        for i in range(0, height, 40):
+            self.image.blit(tile, (0, i))
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -30,6 +32,7 @@ class DumbWall(_wall):
     "Wall that blocks passage"
 
     pic = 'images/dumbwall.png'
+    # pic = 'images/dangerwall.png'
     def collision_detected(self):
         print("Collided with Dumbwall")
 
@@ -99,8 +102,8 @@ LEVELS_SPEC = [
     [
         Collectible('crab', 100, HEIGHT - Collectible.height - 200),
         Collectible('crab', 100, HEIGHT - Collectible.height - 50),
-        DumbWall(800, 0, height=250),
-        DumbWall(800, 500),
+        DangerWall(800, 0, height=250),
+        DangerWall(800, 500),
         Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
         DumbWall(1200, 250),
         DangerWall(1600, 0, height=250),
