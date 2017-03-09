@@ -88,6 +88,7 @@ class Platform(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
+
 class Level():
     """ This is a generic super-class used to define a level.
         Create a child class for each level with level-specific
@@ -98,7 +99,6 @@ class Level():
             platforms collide with the player. """
         self.platform_list = pygame.sprite.Group()
         self.collectible_list = pygame.sprite.Group()
-        self.player = player
         self.level_spec = level_spec
 
         # How far this world has been scrolled left/right
@@ -213,7 +213,6 @@ def main():
         # check for collisions with the edges of the window
         if octy.x <= int(.1*size[0]):
             octy.move_right()
-            diff = octy.rect[2]
             current_level.shift_world(octy.speed[0])
             x1 += octy.speed[0]
             x += octy.speed[0]
@@ -223,7 +222,6 @@ def main():
                 x1 = -w
         elif octy.x + octy.rect[2] >= int(.9*size[0]):
             octy.move_left()
-            diff = octy.rect[2]
             current_level.shift_world(-octy.speed[0])
             x1 -= octy.speed[0]
             x -= octy.speed[0]
@@ -237,6 +235,7 @@ def main():
         elif octy.y + octy.rect[3] >= size[1]:
             octy.speed[1] = -2
 
+        print('player position', octy.x, octy.y)
         active_sprite_list.update()
         current_level.update()
 
