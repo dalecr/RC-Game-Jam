@@ -4,6 +4,7 @@ import pygame
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (50, 50, 255)
+RED = (255, 0, 0)
 
 
 
@@ -15,11 +16,12 @@ BLUE = (50, 50, 255)
 
 class _wall(pygame.sprite.Sprite):
     is_fixed = True
+    color = BLACK
 
     def __init__(self, x, y, width, height):
         super().__init__()
         self.image = pygame.Surface([width, height])
-        self.image.fill(BLACK)
+        self.image.fill(self.color)
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -35,6 +37,7 @@ class DumbWall(_wall):
 
 
 class DangerWall(_wall):
+    color = RED
     "Wall that kills the octopus"
     def collision_detected(self):
         print("Collided with Dangerwall")
