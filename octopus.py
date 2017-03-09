@@ -198,8 +198,7 @@ class Level():
         for collision in collision_list:
             collision.collision_detected()
             if collision.is_end:
-                GAME_STATE.current_level_index += 1
-                print("you finished, hell yeah!!!!")
+                GAME_STATE.finished_level = True
 
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
             # print(wall_parameters)
@@ -218,8 +217,9 @@ class Level():
 class GameState():
     score = 0
     current_level_index = 0
-    end_level = 0
-    finished = False
+    total_levels = 0
+    finished_level = False
+    finished_game = False
     game_over = False
 
 
@@ -256,15 +256,30 @@ def main():
     octy = Octopus(size)
 
     level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
+    GAME_STATE.total_levels = len(level_list)
     current_level = level_list[GAME_STATE.current_level_index]
 
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
-    while True:
+    while not GAME_STATE.finished_game:
+
         if GAME_STATE.game_over:
             d = death(screen, octy)
             d.draw(screen, octy)
+
+        if GAME_STATE.finished_level:
+            GAME_STATE.current_level_index += 1
+            if GAME_STATE.current_level_index == GAME_STATE.total_levels:
+                print("YOU WON MODAFACKAAAAAAA")
+                GAME_STATE.finished_game = True
+            else:
+                x, y, y1 = (0, 0, 0)
+                x1 = w
+                GAME_STATE.score = 0
+                current_level = level_list[GAME_STATE.current_level_index]
+                GAME_STATE.finished_level = False
+
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
