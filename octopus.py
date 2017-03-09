@@ -43,6 +43,9 @@ class Octopus(object):
         self.speed = [15,10]
         self.jump_speed = -10
 
+        self.blocked = None
+        self.dead = False
+
     def fall(self):
         # moves the octopus downwards/upwards and updates its vertical speed and rect
         self.y += self.speed[1]
@@ -85,6 +88,7 @@ class Level():
             platforms collide with the player. """
         self.platform_list = pygame.sprite.Group()
         self.collectible_list = pygame.sprite.Group()
+        self.killer_list = pygame.sprite.Group()
         self.level_spec = level_spec
 
         # How far this world has been scrolled left/right
@@ -94,7 +98,9 @@ class Level():
 
         # Go through the array above and add platforms
         for block in level_spec:
-            if block.is_fixed:
+            if block.is_killer:
+                self.killer_list.add(block)
+            elif block.is_fixed:
                 self.platform_list.add(block)
             else:
                 self.collectible_list.add(block)
@@ -104,6 +110,7 @@ class Level():
         """ Update everything in this level."""
         self.platform_list.update()
         self.collectible_list.update()
+        self.killer_list.update()
 
     def draw(self, screen):
         """ Draw everything on this level. """
@@ -111,6 +118,7 @@ class Level():
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
         self.collectible_list.draw(screen)
+        self.killer_list.draw(screen)
 
     def shift_world(self, shift_x):
         """ When the user moves left/right and we need to scroll
@@ -122,18 +130,24 @@ class Level():
         # Go through all the sprite lists and shift
         for platform in self.platform_list:
             platform.rect.x += shift_x
-
+        for wall in self.killer_list:
+            wall.rect.x += shift_x
         for enemy in self.collectible_list:
             enemy.rect.x += shift_x
 
     def detect_collisions(self, thing):
 
+        global score
+
+        kill_octy = pygame.sprite.spritecollideany(thing, self.killer_list, False)
+        #kill_octy = False
+        #for collision in collision_list:
+        #    collision.collision_detected()
+
+
+
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
-
-        global score
-        collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
-
         for collision in collision_list:
             collision.collision_detected()
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
@@ -145,9 +159,9 @@ class Level():
             score += 1
 
         if wall_parameters:
-            return wall_parameters
+            return wall_parameters, kill_octy
         else:
-            return None
+            return None, kill_octy
 
 
 
@@ -259,8 +273,8 @@ def main():
 
 
         # return parameters of wall if blocked
-        octy.blocked = current_level.detect_collisions(octy)
-
+        octy.blocked, octy.dead = current_level.detect_collisions(octy)
+        print('octy.dead')
 
         #change position if blocked by wall
         if octy.blocked:
