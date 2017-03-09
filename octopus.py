@@ -35,6 +35,7 @@ class Octopus(object):
         self.rect = self.image.get_rect() # rect used for collision detection
 
         self.floor = win_size[1]-self.rect[3]-1
+        self.blocked = None
 
         # set starting position
         self.x = int(win_size[0]/2) # octopus starts halfway across the screen
@@ -49,7 +50,6 @@ class Octopus(object):
         self.jump_speed = -10
 
     def move(self):
-        # self.x += self.speed[0]
         self.y += self.speed[1]
         if self.speed[1] == self.jump_speed or self.speed[1] == 2: # octopus is jumping or hitting the ceiling
             self.speed[1] = 10 # gravity
@@ -63,11 +63,20 @@ class Octopus(object):
 
     def move_left(self):
         # self.speed[0] = 20
+        #if self.blocked == False:
         self.x-=self.speed[0]
+        #else:
+        #    self.x+=1
+        #    self.blocked = False
 
     def move_right(self):
         # self.speed[0] = 20
+        #self.x+=self.speed[0]
+        #if self.blocked == False:
         self.x+=self.speed[0]
+        #else:
+        #    self.x-=1
+        #    self.blocked = False
 
     def draw(self,surface):
         surface.blit(self.image, (self.x, self.y))
@@ -139,15 +148,18 @@ class Level():
 
         for enemy in self.collectible_list:
             enemy.rect.x += shift_x
-    
+
     def detect_collisions(self, thing):
-        collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
-        for collision in collision_list:
+        collision_list_walls = pygame.sprite.spritecollide(thing, self.platform_list, False)
+        for collision in collision_list_walls:
             collision.collision_detected()
 
         collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
         for collision in collision_list:
             collision.collision_detected()
+
+        if len(collision_list_walls) > 0: return None
+    else: return collision_list_walls[0]]
 
 
 
@@ -235,7 +247,9 @@ def main():
         elif octy.y + octy.rect[3] >= size[1]:
             octy.speed[1] = -2
 
-        print('player position', octy.x, octy.y)
+        #print(octy.speed)
+
+        #print('player position', octy.x, octy.y)
         active_sprite_list.update()
         current_level.update()
 
@@ -255,7 +269,8 @@ def main():
             iters += 1
 
         # draw the octopus and other objects
-        current_level.detect_collisions(octy)
+        octy.blocked = current_level.detect_collisions(octy)
+        #print ('octy.blocked is ', octy.blocked)
 
         screen.blit(bg,bg_rect)
         current_level.draw(screen)
