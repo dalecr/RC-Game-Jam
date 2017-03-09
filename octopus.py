@@ -1,7 +1,7 @@
 # octopus.py
 # experimental game code for game jam
 # created 3/3/2017 by Connor Dale
- 
+
 import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
@@ -37,7 +37,7 @@ class death(object):
         if self.playedSound == False:
             sfx = ['supermario.mp3','wilhelm_scream.mp3']
             import random
-            mp3 = random.choice(sfx) 
+            mp3 = random.choice(sfx)
             pygame.mixer.music.load("sfx/" + mp3)
             pygame.mixer.music.play(0)
             self.playedSound = True
@@ -49,7 +49,7 @@ class death(object):
                 imgName = dirname + "deado-" + str(i) + ".png"
                 img = pygame.image.load(imgName)
                 img = pygame.transform.rotate(img,180)
-                
+
                 octopus.leftImages.append(img);
 
 
@@ -57,7 +57,7 @@ class death(object):
         octopus.rect = octopus.image.get_rect() # rect used for collision detection
 
 
-                
+
 
 class Octopus(object):
 
