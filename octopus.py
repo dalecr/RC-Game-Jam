@@ -2,16 +2,9 @@
 # experimental game code for game jam
 # created 3/3/2017 by Connor Dale
 
-import sys, pygame, math, ctypes, imageList, random
+import sys, pygame, imageList
 from levels import LEVELS_SPEC
-
-
-# Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
+from pygame.locals import*
 
 class Octopus(object):
 
@@ -30,56 +23,50 @@ class Octopus(object):
         self.rightImages.append(pygame.image.load("images/octopus_r.png"))
         self.rightImages.append(pygame.image.load("images/octopus_r2.png"))
         self.rightImages.set_current()
+        # self.jump_image = pygame.image.load("images/octopus_jump.png")
         self.image = self.rightImages.current.data # image that is displayed
         self.rect = self.image.get_rect() # rect used for collision detection
 
-        self.floor = win_size[1]-self.rect[3]-1
-        self.blocked = None
+        self.floor = win_size[1]-self.rect[3]
 
         # set starting position
-        self.x = int(win_size[0]/2) # octopus starts halfway across the screen
-        self.y = self.floor # octopus starts at the bottom of the screen
+        self.x = int(win_size[0]*.15) # octopus starts on the left side of the screen
+        self.y = 15 # octopus starts at the top of the screen
 
         # set rect coordinates to match image position
         self.rect[0] = self.x
         self.rect[1] = self.y
 
         # set starting speed (stationary)
-        self.speed = [15,0]
+        self.speed = [15,10]
         self.jump_speed = -10
 
-    def move(self):
+    def fall(self):
+        # moves the octopus downwards/upwards and updates its vertical speed and rect
         self.y += self.speed[1]
         if self.speed[1] == self.jump_speed or self.speed[1] == 2: # octopus is jumping or hitting the ceiling
             self.speed[1] = 10 # gravity
         elif self.y >= self.floor: # octopus is hitting the floor
             self.speed[1] = 0
-
+            self.y = self.floor - 2
         # update Rect object position
         self.rect[0] = self.x
         self.rect[1] = self.y
 
     def move_left(self):
-
-        # self.speed[0] = 20
-
+        # moves the octopus left and updates its rect
         self.x-=self.speed[0]
-        #else:
-        #    self.x+=1
-        #    self.blocked = False
+        self.rect[0] = self.x
+        self.rect[1] = self.y
 
     def move_right(self):
-
-        # self.speed[0] = 20
-        #self.x+=self.speed[0]
-        #if self.blocked == False:
-
+        # moves the octopus right and updates its rect
         self.x+=self.speed[0]
-        #else:
-        #    self.x-=1
-        #    self.blocked = False
+        self.rect[0] = self.x
+        self.rect[1] = self.y
 
     def draw(self,surface):
+        # draws the octopus on the given surface
         surface.blit(self.image, (self.x, self.y))
 
 
@@ -136,20 +123,15 @@ class Level():
 
         for enemy in self.collectible_list:
             enemy.rect.x += shift_x
-
+    
     def detect_collisions(self, thing):
-        collision_list_walls = pygame.sprite.spritecollide(thing, self.platform_list, False)
-        for collision in collision_list_walls:
+        collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
+        for collision in collision_list:
             collision.collision_detected()
 
         collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
         for collision in collision_list:
             collision.collision_detected()
-
-        if len(collision_list_walls) > 0:
-            return collision_list_walls[0]
-        else:
-            return None
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +145,6 @@ def main():
 
     bg = pygame.image.load("images/undersea.png")
     size = bg.get_size()
-    print(size)
     bg_rect = bg.get_rect()
     screen = pygame.display.set_mode(size)
     w,h = size
@@ -178,7 +159,6 @@ def main():
     level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
     curent_level_no = 0
     current_level = level_list[curent_level_no]
-    active_sprite_list = pygame.sprite.Group()
 
     clock = pygame.time.Clock()
     iters = 0
@@ -203,9 +183,6 @@ def main():
             # octy.speed[0] = 2
             octy.move_right()
             octy.image = octy.rightImages.current.data
-        # else: # Stand still
-            # octy.speed[0] = 0
-
         if pressedKeys[pygame.K_UP]: # Jump upwards
             octy.speed[1] = octy.jump_speed
 
@@ -231,17 +208,12 @@ def main():
 
         if octy.y <= 0:
             octy.speed[1] = 2
-        elif octy.y + octy.rect[3] >= size[1]:
-            octy.speed[1] = -2
 
-        #print(octy.speed)
-
-        #print('player position', octy.x, octy.y)
-        active_sprite_list.update()
+        print('player position', octy.x, octy.y)
         current_level.update()
 
         # move the octopus
-        octy.move()
+        octy.fall()
 
         # draw the background
         screen.blit(bg,(x,y))
@@ -256,11 +228,9 @@ def main():
             iters += 1
 
         # draw the octopus and other objects
-        octy.blocked = current_level.detect_collisions(octy)
-        #print ('octy.blocked is ', octy.blocked)
+        current_level.detect_collisions(octy)
 
         current_level.draw(screen)
-        active_sprite_list.draw(screen)
         octy.draw(screen)
 
         clock.tick(60)
