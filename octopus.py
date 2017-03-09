@@ -74,7 +74,6 @@ class Octopus(object):
         # self.speed[0] = 20
         #self.x+=self.speed[0]
         #if self.blocked == False:
-
         self.x+=self.speed[0]
         #else:
         #    self.x-=1
@@ -139,16 +138,19 @@ class Level():
             enemy.rect.x += shift_x
 
     def detect_collisions(self, thing):
-        collision_list_walls = pygame.sprite.spritecollide(thing, self.platform_list, False)
-        for collision in collision_list_walls:
+        collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
+        wall_parameters = ()
+        for collision in collision_list:
             collision.collision_detected()
+            wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
+            print(wall_parameters)
 
         collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
         for collision in collision_list:
             collision.collision_detected()
 
-        if len(collision_list_walls) > 0:
-            return collision_list_walls[0]
+        if wall_parameters:
+            return wall_parameters
         else:
             return None
 
@@ -235,6 +237,7 @@ def main():
         elif octy.y + octy.rect[3] >= size[1]:
             octy.speed[1] = -2
 
+
         #print(octy.speed)
 
         #print('player position', octy.x, octy.y)
@@ -256,10 +259,27 @@ def main():
         else:
             iters += 1
 
-        # draw the octopus and other objects
+        # return parameters of wall if blocked
         octy.blocked = current_level.detect_collisions(octy)
-        #print ('octy.blocked is ', octy.blocked)
 
+        #change position if blocked by wall
+        if octy.blocked:
+            print ('octy.blocked is ', octy.blocked)
+
+            if pressedKeys[pygame.K_LEFT]: # bounce back right
+                octy.x += 20
+                octy.image = octy.leftImages.current.data
+            elif pressedKeys[pygame.K_RIGHT]:
+                octy.x -= 30
+                octy.image = octy.rightImages.current.data
+
+            if pressedKeys[pygame.K_UP]: #go down
+                octy.y += 20
+            else:
+                octy.y -= 50
+
+
+        # draw the octopus and other objects
         current_level.draw(screen)
         active_sprite_list.draw(screen)
         octy.draw(screen)
