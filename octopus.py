@@ -75,11 +75,13 @@ class Octopus(object):
     def fall(self):
         # moves the octopus downwards/upwards and updates its vertical speed and rect
         self.y += self.speed[1]
-        if self.speed[1] == self.jump_speed or self.speed[1] == 2: # octopus is jumping or hitting the ceiling
-            self.speed[1] = 10 # gravity
-        elif self.y >= self.floor: # octopus is hitting the floor
+        # elif self.speed[1] == self.jump_speed or self.speed[1] == 2: # octopus is jumping or hitting the ceiling
+            # self.speed[1] = 10 # gravity
+        if self.y >= self.floor: # octopus is hitting the floor
             self.speed[1] = 0
             self.y = self.floor - 2
+        else:
+            self.speed[1] = 10
         # update Rect object position
         self.rect[0] = self.x
         self.rect[1] = self.y
@@ -170,8 +172,6 @@ class Level():
         #kill_octy = False
         #for collision in collision_list:
         #    collision.collision_detected()
-
-
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
@@ -312,15 +312,19 @@ def main():
 
             if pressedKeys[pygame.K_LEFT]: # bounce back right
                 octy.x += 20
+                # octy.move_right()
                 octy.image = octy.leftImages.current.data
             elif pressedKeys[pygame.K_RIGHT]:
-                octy.x -= 30
+                octy.x -= 20
+                # octy.move_left()
                 octy.image = octy.rightImages.current.data
 
             if pressedKeys[pygame.K_UP]: #go down
-                octy.y += 20
+                # octy.y += 20
+                octy.speed[1] = 0
             else:
-                octy.y -= 50
+                # octy.y -= 50
+                octy.speed[1] = 0
 
 
         # draw the octopus and other objects
