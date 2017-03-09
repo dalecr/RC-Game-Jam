@@ -6,15 +6,13 @@ import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
 
-score = 0
-
 class death(object):
-    
+
     def __init__(self,win_size):
-        pygame.sprite.Sprite.__init__(self)    
+        pygame.sprite.Sprite.__init__(self)
         self.images = imageList.CircularLinkedList()
-        
-        
+
+
         for i in range(4) :
             dirname = "images/you_died/"
             img = dirname + "dead-" + str(i) + ".png"
@@ -25,9 +23,14 @@ class death(object):
 
         self.x = 200
         self.y = 200
+<<<<<<< HEAD
         self.playedSound = False;
     
     def draw(self,surface,octopus):
+=======
+
+    def draw(self,surface):
+>>>>>>> e3fb4f4d645f3df1bc9c61627b0ef5a6417d8ecf
         # draws the octopus on the given surface
         self.image = self.images.current.data
         self.images.update_current()
@@ -174,7 +177,7 @@ class Level():
         self.platform_list.draw(screen)
         self.collectible_list.draw(screen)
         self.killer_list.draw(screen)
-        
+
 
     def shift_world(self, shift_x):
         """ When the user moves left/right and we need to scroll
@@ -193,31 +196,37 @@ class Level():
 
     def detect_collisions(self, thing):
 
-        global score
-
-        kill_octy = pygame.sprite.spritecollideany(thing, self.killer_list, False)
-        #kill_octy = False
-        #for collision in collision_list:
-        #    collision.collision_detected()
+        if pygame.sprite.spritecollideany(thing, self.killer_list, False):
+            GAME_STATE.game_over = True
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
         for collision in collision_list:
             collision.collision_detected()
+            if collision.is_end:
+                GAME_STATE.current_level_index += 1
+                print("you finished, hell yeah!!!!")
+
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
-            print(wall_parameters)
+            # print(wall_parameters)
 
         collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
         for collision in collision_list:
             collision.collision_detected()
-            score += 1
+            GAME_STATE.score += 1
 
         if wall_parameters:
-            return wall_parameters, kill_octy
+            return wall_parameters
         else:
-            return None, kill_octy
+            return None
 
 
+class GameState():
+    score = 0
+    current_level_index = 0
+    end_level = 0
+    finished = False
+    game_over = False
 
 
 
@@ -230,6 +239,8 @@ def draw_score(screen, score, ssize):
     score_rect = score_surf.get_rect()
     score_rect.topleft = (ssize[0]- 220, 50)
     screen.blit(score_surf, score_rect)
+
+GAME_STATE = GameState()
 
 def main():
     '''
@@ -249,16 +260,14 @@ def main():
 
     # create octopus object
     octy = Octopus(size)
-    d = death(size)
 
     level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
-    curent_level_no = 0
-    current_level = level_list[curent_level_no]
+    current_level = level_list[GAME_STATE.current_level_index]
 
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
-    while True:
+    while not GAME_STATE.game_over:
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -307,8 +316,6 @@ def main():
         elif octy.y + octy.rect[3] >= size[1]:
             octy.speed[1] = -2
 
-
-        print('player position', octy.x, octy.y)
         current_level.update()
 
         # move the octopus
@@ -328,15 +335,11 @@ def main():
 
 
         # return parameters of wall if blocked
-        octy.blocked, octy.dead = current_level.detect_collisions(octy)
-        print('octy.dead')
-        
+        octy.blocked = current_level.detect_collisions(octy)
 
 
         #change position if blocked by wall
         if octy.blocked:
-            print ('octy.blocked is ', octy.blocked)
-
             if pressedKeys[pygame.K_LEFT]: # bounce back right
                 octy.x += 20
                 # octy.move_right()
@@ -356,10 +359,17 @@ def main():
 
         # draw the octopus and other objects
         current_level.draw(screen)
+<<<<<<< HEAD
         draw_score(screen, score, size)
         #d.draw(screen,octy)
         octy.draw(screen)
      
+=======
+        draw_score(screen, GAME_STATE.score, size)
+        octy.draw(screen)
+        #d.draw(screen)
+
+>>>>>>> e3fb4f4d645f3df1bc9c61627b0ef5a6417d8ecf
 
         clock.tick(60)
 
