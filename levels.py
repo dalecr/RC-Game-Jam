@@ -89,7 +89,20 @@ LEVELS_SPEC = [
         DangerWall(2200, 250),
         Collectible('crab', 1600, HEIGHT - Collectible.height - 50),
         DangerWall(2800, 0),
-        Garden(2920),
+        Garden(3200),
     ],
-    # next levels go here
+    [
+        Collectible('crab', 100, HEIGHT - Collectible.height - 200),
+        Collectible('crab', 100, HEIGHT - Collectible.height - 50),
+        DumbWall(800, 0, height=250),
+        DumbWall(800, 500),
+        DumbWall(1200, 250),
+        DangerWall(1600, 0, height=250),
+        DangerWall(1600, 500),
+        Collectible('crab', 1700, HEIGHT - Collectible.height - 50),
+        Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
+        DangerWall(2200, 250),
+        DangerWall(2800, 0),
+        Garden(3200),
+    ],
 ]
