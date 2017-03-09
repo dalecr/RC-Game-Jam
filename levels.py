@@ -18,7 +18,7 @@ class _wall(pygame.sprite.Sprite):
     is_fixed = True
     color = BLACK
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width=40, height=450):
         super().__init__()
         self.image = pygame.Surface([width, height])
         self.image.fill(self.color)
@@ -44,7 +44,7 @@ class DangerWall(_wall):
 
 
 class Collectible(pygame.sprite.Sprite):
-    width = height = 20
+    width = height = 40
     is_fixed = False
 
     def __init__(self, name, x, y):
@@ -82,13 +82,13 @@ WIDTH, HEIGHT = 1200, 700
 
 LEVELS_SPEC = [
     [
-        DumbWall(1200, 200, 10, HEIGHT - 200),
-        DumbWall(1500, 200, 10, HEIGHT - 200),
-        DangerWall(1600, 0, 10, HEIGHT - 200),
+        DumbWall(800, 250),
+        DumbWall(1200, 250),
+        DangerWall(1600, 0),
         Collectible('crab', 2000, HEIGHT - Collectible.height),
-        DangerWall(2200, 200, 10, HEIGHT - 200),
+        DangerWall(2200, 250),
         Collectible('crab', 1600, HEIGHT - Collectible.height),
-        DangerWall(2800, 0, 10, HEIGHT - 200),
+        DangerWall(2800, 0),
         Garden(2920),
     ],
     # next levels go here
