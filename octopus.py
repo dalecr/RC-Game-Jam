@@ -1,7 +1,7 @@
 # octopus.py
 # experimental game code for game jam
 # created 3/3/2017 by Connor Dale
- 
+
 import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
@@ -36,7 +36,7 @@ class death(object):
         if self.playedSound == False:
             sfx = ['supermario.mp3','wilhelm_scream.mp3']
             import random
-            mp3 = random.choice(sfx) 
+            mp3 = random.choice(sfx)
             pygame.mixer.music.load("sfx/" + mp3)
             pygame.mixer.music.play(0)
             self.playedSound = True
@@ -48,7 +48,7 @@ class death(object):
                 imgName = dirname + "deado-" + str(i) + ".png"
                 img = pygame.image.load(imgName)
                 img = pygame.transform.rotate(img,180)
-                
+
                 octopus.leftImages.append(img);
 
 
@@ -56,7 +56,7 @@ class death(object):
         octopus.rect = octopus.image.get_rect() # rect used for collision detection
 
 
-                
+
 
 class Octopus(object):
 
@@ -192,6 +192,9 @@ class Level():
 
         if pygame.sprite.spritecollideany(thing, self.killer_list, False):
             GAME_STATE.game_over = True
+            #collision_list = pygame.sprite.spritecollide(thing, self.killer_list, False)
+            #rect = collision_list[0].rect
+            #print("x y rect", rect.x, rect.y, rect.left, rect.top)
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
@@ -352,14 +355,15 @@ def main():
 
         #change position if blocked by wall
         if octy.blocked:
-            if pressedKeys[pygame.K_LEFT]: # bounce back right
-                octy.x += 20
-                # octy.move_right()
-                octy.image = octy.leftImages.current.data
-            elif pressedKeys[pygame.K_RIGHT]:
-                octy.x -= 20
-                # octy.move_left()
-                octy.image = octy.rightImages.current.data
+            if not octy.y < octy.blocked[0] and not octy.y > octy.blocked[3]:
+                if pressedKeys[pygame.K_LEFT]: # bounce back right
+                    octy.x += 20
+                    # octy.move_right()
+                    octy.image = octy.leftImages.current.data
+                elif pressedKeys[pygame.K_RIGHT]:
+                    octy.x -= 20
+                    # octy.move_left()
+                    octy.image = octy.rightImages.current.data
 
             if pressedKeys[pygame.K_UP]: #go down
                 # octy.y += 20
