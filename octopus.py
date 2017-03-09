@@ -4,7 +4,6 @@
 
 import sys, pygame, math, ctypes, imageList, random
 from levels import LEVELS_SPEC
-from pygame.locals import*
 
 
 # Colors
