@@ -7,12 +7,12 @@ from levels import LEVELS_SPEC
 from pygame.locals import*
 
 class death(object):
-    
+
     def __init__(self,win_size):
-        pygame.sprite.Sprite.__init__(self)    
+        pygame.sprite.Sprite.__init__(self)
         self.images = imageList.CircularLinkedList()
-        
-        
+
+
         for i in range(4) :
             dirname = "images/you_died/"
             img = dirname + "dead-" + str(i) + ".png"
@@ -23,7 +23,7 @@ class death(object):
 
         self.x = 200
         self.y = 200
-    
+
     def draw(self,surface):
         # draws the octopus on the given surface
         self.image = self.images.current.data
@@ -145,7 +145,7 @@ class Level():
         self.platform_list.draw(screen)
         self.collectible_list.draw(screen)
         self.killer_list.draw(screen)
-        
+
 
     def shift_world(self, shift_x):
         """ When the user moves left/right and we need to scroll
@@ -164,7 +164,8 @@ class Level():
 
     def detect_collisions(self, thing):
 
-        kill_octy = pygame.sprite.spritecollideany(thing, self.killer_list, False)
+        if pygame.sprite.spritecollideany(thing, self.killer_list, False):
+            GAME_STATE.game_over = True
 
         collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
         wall_parameters = ()
@@ -183,9 +184,9 @@ class Level():
             GAME_STATE.score += 1
 
         if wall_parameters:
-            return wall_parameters, kill_octy
+            return wall_parameters
         else:
-            return None, kill_octy
+            return None
 
 
 class GameState():
@@ -193,6 +194,7 @@ class GameState():
     current_level_index = 0
     end_level = 0
     finished = False
+    game_over = False
 
 
 
@@ -226,14 +228,14 @@ def main():
 
     # create octopus object
     octy = Octopus(size)
-    
+
     level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
     current_level = level_list[GAME_STATE.current_level_index]
 
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
-    while True:
+    while not GAME_STATE.game_over:
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -301,7 +303,7 @@ def main():
 
 
         # return parameters of wall if blocked
-        octy.blocked, octy.dead = current_level.detect_collisions(octy)
+        octy.blocked = current_level.detect_collisions(octy)
 
 
         #change position if blocked by wall
@@ -328,7 +330,7 @@ def main():
         draw_score(screen, GAME_STATE.score, size)
         octy.draw(screen)
         #d.draw(screen)
-     
+
 
         clock.tick(60)
 
