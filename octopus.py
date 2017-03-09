@@ -13,6 +13,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+score = 0
 
 class Octopus(object):
 
@@ -139,6 +140,7 @@ class Level():
             enemy.rect.x += shift_x
 
     def detect_collisions(self, thing):
+        global score
         collision_list_walls = pygame.sprite.spritecollide(thing, self.platform_list, False)
         for collision in collision_list_walls:
             collision.collision_detected()
@@ -146,6 +148,7 @@ class Level():
         collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
         for collision in collision_list:
             collision.collision_detected()
+            score += 1
 
         if len(collision_list_walls) > 0:
             return collision_list_walls[0]
@@ -155,6 +158,13 @@ class Level():
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+def draw_score(screen, score, ssize):
+    score_font = pygame.font.Font('freesansbold.ttf', 30)
+    score_surf = score_font.render('Score: %s' % (score), True, (255, 255,255))
+    score_rect = score_surf.get_rect()
+    score_rect.topleft = (ssize[0]- 220, 50)
+    screen.blit(score_surf, score_rect)
 
 def main():
     '''
@@ -262,6 +272,7 @@ def main():
 
         current_level.draw(screen)
         active_sprite_list.draw(screen)
+        draw_score(screen, score, size)
         octy.draw(screen)
 
         clock.tick(60)
