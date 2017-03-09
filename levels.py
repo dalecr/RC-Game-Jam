@@ -14,6 +14,8 @@ BLUE = (50, 50, 255)
 # Garden(x=1000)  # only needs x position
 
 class _wall(pygame.sprite.Sprite):
+    is_fixed = True
+
     def __init__(self, x, y, width, height):
         super().__init__()
         self.image = pygame.Surface([width, height])
@@ -21,6 +23,9 @@ class _wall(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
+
+    def is_fixed(self):
+        return True
 
 
 class DumbWall(_wall):
@@ -37,6 +42,7 @@ class DangerWall(_wall):
 
 class Collectible(pygame.sprite.Sprite):
     width = height = 20
+    is_fixed = False
 
     def __init__(self, name, x, y):
         super().__init__()
@@ -50,9 +56,11 @@ class Collectible(pygame.sprite.Sprite):
     def collision_detected(self):
         print("Just got a collectible")
 
+
 class Garden(pygame.sprite.Sprite):
     height = 1000  # TODO: screen height
     width = 10
+    is_fixed = True
 
     def __init__(self, x):
         self.image = pygame.Surface([self.width, self.height])
@@ -66,19 +74,19 @@ class Garden(pygame.sprite.Sprite):
     def collision_detected(self):
         print("Now inside the garden")
 
-WIDTH, HEIGHT = 1920, 1080
+WIDTH, HEIGHT = 1200, 700
 
 
 LEVELS_SPEC = [
     [
-        DumbWall(200, 200, 10, HEIGHT - 200),
-        DumbWall(500, 200, 10, HEIGHT - 200),
-        DangerWall(600, 0, 10, HEIGHT - 200),
-        Collectible('crab', 1000, HEIGHT - Collectible.height),
-        DangerWall(1200, 200, 10, HEIGHT - 200),
+        DumbWall(1200, 200, 10, HEIGHT - 200),
+        DumbWall(1500, 200, 10, HEIGHT - 200),
+        DangerWall(1600, 0, 10, HEIGHT - 200),
+        Collectible('crab', 2000, HEIGHT - Collectible.height),
+        DangerWall(2200, 200, 10, HEIGHT - 200),
         Collectible('crab', 1600, HEIGHT - Collectible.height),
-        DangerWall(1800, 0, 10, HEIGHT - 200),
-        Garden(1920),
+        DangerWall(2800, 0, 10, HEIGHT - 200),
+        Garden(2920),
     ],
     # next levels go here
 ]

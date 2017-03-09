@@ -3,7 +3,7 @@
 # created 3/3/2017 by Connor Dale
 
 import sys, pygame, math, ctypes, imageList, random
-from levels import LEVELS_SPEC, Collectible
+from levels import LEVELS_SPEC
 from pygame.locals import*
 
 
@@ -97,7 +97,7 @@ class Level():
         """ Constructor. Pass in a handle to player. Needed for when moving
             platforms collide with the player. """
         self.platform_list = pygame.sprite.Group()
-        self.enemy_list = pygame.sprite.Group()
+        self.collectible_list = pygame.sprite.Group()
         self.player = player
         self.level_spec = level_spec
 
@@ -108,20 +108,23 @@ class Level():
 
         # Go through the array above and add platforms
         for block in level_spec:
-            self.platform_list.add(block)
+            if block.is_fixed:
+                self.platform_list.add(block)
+            else:
+                self.collectible_list.add(block)
 
     # Update everythign on this level
     def update(self):
         """ Update everything in this level."""
         self.platform_list.update()
-        self.enemy_list.update()
+        self.collectible_list.update()
 
     def draw(self, screen):
         """ Draw everything on this level. """
 
         # Draw all the sprite lists that we have
         self.platform_list.draw(screen)
-        self.enemy_list.draw(screen)
+        self.collectible_list.draw(screen)
 
     def shift_world(self, shift_x):
         """ When the user moves left/right and we need to scroll
@@ -134,8 +137,18 @@ class Level():
         for platform in self.platform_list:
             platform.rect.x += shift_x
 
-        for enemy in self.enemy_list:
+        for enemy in self.collectible_list:
             enemy.rect.x += shift_x
+    
+    def detect_collisions(self, thing):
+        collision_list = pygame.sprite.spritecollide(thing, self.platform_list, False)
+        for collision in collision_list:
+            collision.collision_detected()
+
+        collision_list = pygame.sprite.spritecollide(thing, self.collectible_list, True)
+        for collision in collision_list:
+            collision.collision_detected()
+
 
 
 def main():
@@ -165,7 +178,6 @@ def main():
     curent_level_no = 0
     current_level = level_list[curent_level_no]
     active_sprite_list = pygame.sprite.Group()
-    octy.level = current_level
 
     # active_sprite_list.add(octy)
 
@@ -244,12 +256,8 @@ def main():
             iters += 1
 
         # draw the octopus and other objects
-        disappear = {Collectible: True}.get(type(current_level.level_spec), False)
+        current_level.detect_collisions(octy)
 
-        collision_list = pygame.sprite.spritecollide(octy,
-                        current_level.platform_list, disappear)
-        for collision in collision_list:
-            collision.collision_detected()
         screen.blit(bg,bg_rect)
         current_level.draw(screen)
         active_sprite_list.draw(screen)
