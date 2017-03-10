@@ -6,6 +6,13 @@ import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
 
+class welcome(object):
+    def __init__(self,win):
+       pygame.sprite.Sprite.__init__(self) 
+       self.image = pygame.image.load("images/start.png") 
+       win.blit(self.image,(200,0))
+
+
 class death(object):
 
     def __init__(self,win, octopus):
@@ -239,7 +246,7 @@ class GameState():
     end_level = 0
     finished = True
     game_over = False
-
+    start_screen = True
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -293,6 +300,18 @@ def main():
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
     while True:
+        if(GAME_STATE.start_screen):
+            screen.fill( (0,0,0) )
+            
+            for event in pygame.event.get():
+                if event.type==MOUSEBUTTONDOWN:
+                    GAME_STATE.start_screen=False
+            welcome(screen);
+            pygame.display.flip()
+            continue;
+
+
+
         if GAME_STATE.finished:
             octy,d,current_level = next_level(screen)
             x = 0
@@ -322,7 +341,7 @@ def main():
             octy.speed[1] = octy.jump_speed
 
         # check for collisions with the edges of the window
-        if octy.x <= int(.1*size[0]):
+        if octy.x <= int(.3*size[0]):
             octy.move_right()
             current_level.shift_world(octy.speed[0])
             x1 += octy.speed[0]
