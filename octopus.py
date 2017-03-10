@@ -238,12 +238,20 @@ class GameState():
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def draw_score(screen, score, ssize):
+def draw_score(screen, score, level):
     score_font = pygame.font.Font('freesansbold.ttf', 30)
-    score_surf = score_font.render('Score: %s' % (score), True, (255, 255,255))
+    score_surf = score_font.render('Score: %s' % score, True, (255, 255,255))
+    level_surf = score_font.render('Level: %s' % level, True, (255, 255,255))
+  
     score_rect = score_surf.get_rect()
-    score_rect.topleft = (ssize[0]- 220, 50)
+    score_rect.topleft = (50, 50)
+  
+    level_rect = level_surf.get_rect()
+    level_rect.topleft = (50, 150)
+  
     screen.blit(score_surf, score_rect)
+    screen.blit(level_surf, level_rect)
+
 
 GAME_STATE = GameState()
 
@@ -377,7 +385,7 @@ def run_game():
         # draw the octopus and other objects
         current_level.draw(screen)
         octy.draw(screen)
-        draw_score(screen, GAME_STATE.score, size)
+        draw_score(screen, GAME_STATE.score, GAME_STATE.current_level_index + 1)
 
         if GAME_STATE.game_over:
             d.draw(screen, octy)
