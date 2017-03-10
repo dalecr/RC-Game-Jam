@@ -370,12 +370,11 @@ def run_game():
 
         #change position if blocked by wall
         if octy.blocked:
-            if pressedKeys[pygame.K_LEFT]: # bounce back right
-                octy.x += 10
-                octy.move_right()
-            elif pressedKeys[pygame.K_RIGHT]:
-                octy.x -= 10
-                octy.move_left()
+            if octy.y < octy.blocked[3] and octy.y > octy.blocked[0]:
+                if pressedKeys[pygame.K_LEFT]: # bounce back right
+                    octy.x += 20
+                elif pressedKeys[pygame.K_RIGHT]:
+                    octy.x -= 20
             octy.speed[1] = 0
 
         # draw the background
