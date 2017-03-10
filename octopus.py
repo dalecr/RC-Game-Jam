@@ -8,8 +8,8 @@ from pygame.locals import*
 
 class welcome(object):
     def __init__(self,win):
-       pygame.sprite.Sprite.__init__(self) 
-       self.image = pygame.image.load("images/start.png") 
+       pygame.sprite.Sprite.__init__(self)
+       self.image = pygame.image.load("images/start.png")
        win.blit(self.image,(200,0))
 
 
@@ -310,7 +310,7 @@ def main():
     while True:
         if(GAME_STATE.start_screen):
             screen.fill((0, 0, 0))
-            
+
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
                     GAME_STATE.start_screen = False
@@ -392,10 +392,11 @@ def main():
 
         #change position if blocked by wall
         if octy.blocked:
-            if pressedKeys[pygame.K_LEFT]: # bounce back right
-                octy.x += 20
-            elif pressedKeys[pygame.K_RIGHT]:
-                octy.x -= 20
+            if octy.y < octy.blocked[3] and octy.y > octy.blocked[0]:
+                if pressedKeys[pygame.K_LEFT]: # bounce back right
+                    octy.x += 20
+                elif pressedKeys[pygame.K_RIGHT]:
+                    octy.x -= 20
             if pressedKeys[pygame.K_UP]: #go down
                 octy.speed[1] = 0
             else:
