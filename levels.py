@@ -202,7 +202,7 @@ LEVELS_SPEC = [
         DangerWall(1300,0,height=400),
         DangerWall(1300,650),
         DangerWall(1600,400),
-        DumbWall(1850,0,height=600),
+        DumbWall(1850,0,height=400),
         Garden(2400)
     ],
 ]
