@@ -209,7 +209,7 @@ class Level():
             collision.collision_detected()
             if collision.is_end:
                 GAME_STATE.current_level_index += 1
-                GAME_STATE.finished = True
+                GAME_STATE.level_completed = True
 
             wall_parameters = (collision.rect.top, collision.rect.left + collision.rect.width, collision.rect.top + collision.rect.height, collision.rect.left)
             # print(wall_parameters)
@@ -229,13 +229,21 @@ class GameState():
     score = 0
     current_level_index = 0
     end_level = 0
-    finished = True
+    level_completed = False
     game_over = False
     start_screen = True
 
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def draw_text(screen, text, position, color=(255, 255, 255)):
+    font = pygame.font.Font('freesansbold.ttf', 30)
+    surface = font.render(text, True, color)
+  
+    rect = surface.get_rect()
+    rect.topleft = position
+    screen.blit(surface, rect)
 
 
 def draw_score(screen, score, level):
@@ -264,7 +272,7 @@ def next_level(screen):
     level_list = [Level(octy, spec) for spec in LEVELS_SPEC]
     current_level = level_list[GAME_STATE.current_level_index]
 
-    return octy,d,current_level
+    return octy, d, current_level
 
 
 def run_game():
@@ -282,6 +290,11 @@ def run_game():
     clock = pygame.time.Clock()
     iters = 0
     max_iters = 3 # used for animating movement -- image changes every max_iters iterations
+    octy, d, current_level = next_level(screen)
+    x = 0
+    y = 0
+    x1 = w
+    y1 = 0
     while True:
         if GAME_STATE.start_screen:
             screen.fill((0, 0, 0))
@@ -292,15 +305,6 @@ def run_game():
             welcome(screen)
             pygame.display.flip()
             continue
-
-        if GAME_STATE.finished:
-            octy,d,current_level = next_level(screen)
-            x = 0
-            y = 0
-            x1 = w
-            y1 = 0
-            GAME_STATE.finished = False
-
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -308,6 +312,22 @@ def run_game():
                 sys.exit()
 
         pressedKeys = pygame.key.get_pressed()
+
+        if GAME_STATE.level_completed:
+            ready_to_start_new_level = False
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN or (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE):
+                    ready_to_start_new_level = True
+
+            if ready_to_start_new_level:
+                octy, d, current_level = next_level(screen)
+                x = 0
+                y = 0
+                x1 = w
+                y1 = 0
+                GAME_STATE.level_completed = False
+            else:
+                continue
 
         if pressedKeys[pygame.K_ESCAPE]: # Exit
             pygame.quit()
@@ -386,11 +406,15 @@ def run_game():
         octy.draw(screen)
         draw_score(screen, GAME_STATE.score, GAME_STATE.current_level_index + 1)
 
+        if GAME_STATE.level_completed:
+            draw_text(screen, 'Press SPACE to continue to next level', (100, 650),
+                      color=(40, 40, 40))
+
         if GAME_STATE.game_over:
             d.draw(screen, octy)
 
             # if pressedKeys[pygame.K_r]: # restart game
-            #     GAME_STATE.finished = True
+            #     GAME_STATE.level_completed = True
             #     GAME_STATE.game_over = False
             #     pygame.quit()
             #     return True
