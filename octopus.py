@@ -298,35 +298,33 @@ def main():
 
     clock = pygame.time.Clock()
     iters = 0
-    max_iters = 3 # used for animating movement -- image changes every max_iters iterations
+    max_iters = 3  # used for animating movement -- image changes every max_iters iterations
     while True:
         if(GAME_STATE.start_screen):
-            screen.fill( (0,0,0) )
+            screen.fill((0, 0, 0))
             
             for event in pygame.event.get():
-                if event.type==MOUSEBUTTONDOWN:
-                    GAME_STATE.start_screen=False
-            welcome(screen);
+                if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+                    GAME_STATE.start_screen = False
+            welcome(screen)
             pygame.display.flip()
-            continue;
-
-
+            continue
 
         if GAME_STATE.finished:
-            octy,d,current_level = next_level(screen)
+            octy, d, current_level = next_level(screen)
             x = 0
             y = 0
             x1 = w
             y1 = 0
             GAME_STATE.finished = False
 
+        pressedKeys = pygame.key.get_pressed()
+
         # check for events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-        pressedKeys = pygame.key.get_pressed()
 
         if pressedKeys[pygame.K_ESCAPE]: # Exit
             pygame.quit()
