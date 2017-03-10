@@ -1,8 +1,6 @@
 # RC-Game-Jam
 An octopus-themed game.
 
-octopus.py is a user-controlled octopus that swims around
+octopus.py is a side-scroller featuring a player-controlled octopus that swims around walls
 
-kraken.py is giant octopus arms that push the player around
-
-Both are controlled with the arrow keys. Press ESC to quit.
+The octopus is controlled via the arrow keys. Press ESC to quit.
