@@ -92,6 +92,7 @@ def height_from_bottom(x):
 
 LEVELS_SPEC = [
     [
+        # first level
         Collectible('crab', 200, height_from_bottom(250)),
         Collectible('crab', 200, height_from_bottom(150)),
         Collectible('crab', 200, height_from_bottom(50)),
@@ -136,26 +137,45 @@ LEVELS_SPEC = [
         Garden(3200),
     ],
     [
+        # second level
         Collectible('crab', 200, height_from_bottom(250)),
         Collectible('crab', 200, height_from_bottom(150)),
         Collectible('crab', 200, height_from_bottom(50)),
-        DangerWall(800, 0, height=240),
         Collectible('crab', 780, 300),
         Collectible('crab', 780, 360),
+        DangerWall(800, 0, height=240),
         DangerWall(800, 500),
+
         Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
-        DumbWall(1200, 250),
-        DangerWall(1600, 0, height=240),
+        DangerWall(1200, 250),
+        Collectible('crab', 1150, 50),
+
+        Collectible('crab', 1300, height_from_bottom(50)),
+        Collectible('crab', 1300, height_from_bottom(150)),
+
         Collectible('crab', 1580, 300),
         Collectible('crab', 1580, 360),
+        DangerWall(1600, 0, height=240),
         DangerWall(1600, 500),
+
+        Collectible('crab', 1700, 50),
+        Collectible('crab', 1700, 150),
+
         Collectible('crab', 1700, HEIGHT - Collectible.height - 50),
         Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
         DangerWall(2200, 250),
+
+        Collectible('crab', 2450, 50),
+        Collectible('crab', 2450, 150),
+        Collectible('crab', 2550, 50),
+        Collectible('crab', 2550, 150),
+        Collectible('crab', 2650, 50),
+        Collectible('crab', 2650, 150),
         DangerWall(2800, 0),
         Garden(3200),
     ],
     [
+        # third level
         Collectible('crab', 100, HEIGHT - Collectible.height - 200),
         Collectible('crab', 100, HEIGHT - Collectible.height - 50),
         DumbWall(800, 0, height=240),
