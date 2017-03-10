@@ -91,6 +91,7 @@ def height_from_bottom(x):
 
 
 LEVELS_SPEC = [
+
     [
         # first level
         Collectible('crab', 200, height_from_bottom(250)),
@@ -130,19 +131,9 @@ LEVELS_SPEC = [
         Collectible('crab', 2120, 150),
         DangerWall(2150, 250),
 
-        Collectible('crab', 2350, 50),
-        Collectible('crab', 2350, 150),
-        Collectible('crab', 2350, 250),
-        Collectible('crab', 2350, 350),
-        Collectible('crab', 2500, 50),
-        Collectible('crab', 2500, 150),
-        Collectible('crab', 2500, 250),
-        Collectible('crab', 2500, 350),
-        DangerWall(2650, 250),
-
-        Collectible('crab', 3200, height_from_bottom(150)),
-        Collectible('crab', 3200, height_from_bottom(50)),
-        DangerWall(3200, 0),
+        Collectible('crab', 2800, height_from_bottom(150)),
+        Collectible('crab', 2800, height_from_bottom(50)),
+        DangerWall(2800, 0),
 
         Garden(3600),
     ],
@@ -185,19 +176,23 @@ LEVELS_SPEC = [
         Garden(3600),
     ],
     [
-        # third level
-        Collectible('crab', 100, HEIGHT - Collectible.height - 200),
-        Collectible('crab', 100, HEIGHT - Collectible.height - 50),
-        DumbWall(800, 0, height=240),
-        DumbWall(800, 500),
-        Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
-        DumbWall(1200, 250),
-        DangerWall(1600, 0, height=240),
-        DangerWall(1600, 500),
-        Collectible('crab', 1700, HEIGHT - Collectible.height - 50),
-        Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
-        DangerWall(2200, 250),
-        DangerWall(2800, 0),
-        Garden(3600),
+        Collectible('crab', 200, height_from_bottom(300)),
+        DangerWall(800,0,height=240),
+        DangerWall(800,500),
+        Collectible('crab', 200, height_from_bottom(350)),
+        DangerWall(900,0,height=300),
+        DangerWall(900,520),
+        Collectible('crab', 200, height_from_bottom(350)),
+        DangerWall(1000,0,height=240),
+        DangerWall(1000,600),
+        Collectible('crab', 200, height_from_bottom(200)),
+        DangerWall(1100,0,height=300),
+        DangerWall(1100,500),
+        Collectible('crab', 200, height_from_bottom(250)),
+        DangerWall(1300,0,height=400),
+        DangerWall(1300,650),
+        DangerWall(1600,400),
+        DumbWall(1850,0,height=600),
+        Garden(2400)
     ],
 ]
