@@ -1,7 +1,7 @@
 # octopus.py
 # experimental game code for game jam
 # created 3/3/2017 by Connor Dale
- 
+
 import sys, pygame, imageList
 from levels import LEVELS_SPEC
 from pygame.locals import*
@@ -36,7 +36,7 @@ class death(object):
         if self.playedSound == False:
             sfx = ['supermario.mp3','wilhelm_scream.mp3']
             import random
-            mp3 = random.choice(sfx) 
+            mp3 = random.choice(sfx)
             pygame.mixer.music.load("sfx/" + mp3)
             pygame.mixer.music.play(0)
             self.playedSound = True
@@ -48,7 +48,7 @@ class death(object):
                 imgName = dirname + "deado-" + str(i) + ".png"
                 img = pygame.image.load(imgName)
                 img = pygame.transform.rotate(img,180)
-                
+
                 octopus.leftImages.append(img);
 
 
@@ -245,12 +245,20 @@ class GameState():
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def draw_score(screen, score, ssize):
+def draw_score(screen, score, level_index, ssize):
     score_font = pygame.font.Font('freesansbold.ttf', 30)
     score_surf = score_font.render('Score: %s' % (score), True, (255, 255,255))
+    level_surf = score_font.render('Level: %s' % (level_index+1), True, (255, 255,255))
+
     score_rect = score_surf.get_rect()
     score_rect.topleft = (ssize[0]- 220, 50)
+
+    level_rect = level_surf.get_rect()
+    level_rect.top = 50
+    level_rect.left = 50
+
     screen.blit(score_surf, score_rect)
+    screen.blit(level_surf, level_rect)
 
 GAME_STATE = GameState()
 
@@ -383,7 +391,7 @@ def main():
         # draw the octopus and other objects
         current_level.draw(screen)
         octy.draw(screen)
-        draw_score(screen, GAME_STATE.score, size)
+        draw_score(screen, GAME_STATE.score, GAME_STATE.current_level_index, size)
 
         if GAME_STATE.game_over:
             d.draw(screen, octy)
