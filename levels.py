@@ -14,7 +14,7 @@ class _wall(pygame.sprite.Sprite):
     is_end = False
     color = BLACK
 
-    def __init__(self, x, y, width=40, height=450):
+    def __init__(self, x, y, width=40, height=440):
         super().__init__()
         self.image = pygame.Surface([width, height])
         tile = pygame.image.load(self.pic)
@@ -82,31 +82,72 @@ class Garden(pygame.sprite.Sprite):
     def collision_detected(self):
         print("Now inside the garden")
 
+
 WIDTH, HEIGHT = 1200, 700
+
+
+def height_from_bottom(x):
+    return HEIGHT - Collectible.height - x
 
 
 LEVELS_SPEC = [
     [
-        Collectible('crab', 100, HEIGHT - Collectible.height - 200),
-        Collectible('crab', 100, HEIGHT - Collectible.height - 50),
+        Collectible('crab', 200, height_from_bottom(250)),
+        Collectible('crab', 200, height_from_bottom(150)),
+        Collectible('crab', 200, height_from_bottom(50)),
+        Collectible('crab', 750, 50),
         DumbWall(800, 250),
-        Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
+        Collectible('crab', 900, 50),
+        Collectible('crab', 1050, 50),
+        Collectible('crab', 1180, 50),
+        Collectible('crab', 1000, height_from_bottom(450)),
+        Collectible('crab', 1000, height_from_bottom(350)),
+        Collectible('crab', 1000, height_from_bottom(250)),
+        Collectible('crab', 1000, height_from_bottom(150)),
+        Collectible('crab', 1000, height_from_bottom(50)),
         DumbWall(1200, 250),
+
+        Collectible('crab', 1450, 350),
+        Collectible('crab', 1450, 250),
+        Collectible('crab', 1450, 150),
+        Collectible('crab', 1450, 50),
+        Collectible('crab', 1580, height_from_bottom(150)),
+        Collectible('crab', 1580, height_from_bottom(50)),
         DangerWall(1600, 0),
-        Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
-        DangerWall(2200, 250),
-        Collectible('crab', 1600, HEIGHT - Collectible.height - 50),
+        Collectible('crab', 1650, 50),
+        Collectible('crab', 1650, 100),
+        Collectible('crab', 1650, 150),
+        Collectible('crab', 1700, 50),
+        Collectible('crab', 1700, 100),
+        Collectible('crab', 1700, 150),
+
+        Collectible('crab', 2000, height_from_bottom(350)),
+        Collectible('crab', 2000, height_from_bottom(250)),
+        Collectible('crab', 2000, height_from_bottom(150)),
+        Collectible('crab', 2000, height_from_bottom(50)),
+        Collectible('crab', 2120, 50),
+        Collectible('crab', 2120, 150),
+        DangerWall(2150, 250),
+
+        Collectible('crab', 2800, height_from_bottom(150)),
+        Collectible('crab', 2800, height_from_bottom(50)),
         DangerWall(2800, 0),
+
         Garden(3200),
     ],
     [
-        Collectible('crab', 100, HEIGHT - Collectible.height - 200),
-        Collectible('crab', 100, HEIGHT - Collectible.height - 50),
-        DangerWall(800, 0, height=250),
+        Collectible('crab', 200, height_from_bottom(250)),
+        Collectible('crab', 200, height_from_bottom(150)),
+        Collectible('crab', 200, height_from_bottom(50)),
+        DangerWall(800, 0, height=240),
+        Collectible('crab', 780, 300),
+        Collectible('crab', 780, 360),
         DangerWall(800, 500),
         Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
         DumbWall(1200, 250),
-        DangerWall(1600, 0, height=250),
+        DangerWall(1600, 0, height=240),
+        Collectible('crab', 1580, 300),
+        Collectible('crab', 1580, 360),
         DangerWall(1600, 500),
         Collectible('crab', 1700, HEIGHT - Collectible.height - 50),
         Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
@@ -117,11 +158,11 @@ LEVELS_SPEC = [
     [
         Collectible('crab', 100, HEIGHT - Collectible.height - 200),
         Collectible('crab', 100, HEIGHT - Collectible.height - 50),
-        DumbWall(800, 0, height=250),
+        DumbWall(800, 0, height=240),
         DumbWall(800, 500),
         Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
         DumbWall(1200, 250),
-        DangerWall(1600, 0, height=250),
+        DangerWall(1600, 0, height=240),
         DangerWall(1600, 500),
         Collectible('crab', 1700, HEIGHT - Collectible.height - 50),
         Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
@@ -132,11 +173,11 @@ LEVELS_SPEC = [
     [
         Collectible('crab', 100, HEIGHT - Collectible.height - 200),
         Collectible('crab', 100, HEIGHT - Collectible.height - 50),
-        DumbWall(800, 0, height=250),
+        DumbWall(800, 0, height=240),
         DumbWall(800, 500),
         Collectible('crab', 1000, HEIGHT - Collectible.height - 50),
         DumbWall(1200, 250),
-        DangerWall(1600, 0, height=250),
+        DangerWall(1600, 0, height=240),
         DangerWall(1600, 500),
         Collectible('crab', 1700, HEIGHT - Collectible.height - 50),
         Collectible('crab', 2000, HEIGHT - Collectible.height - 50),
