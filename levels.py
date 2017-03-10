@@ -131,9 +131,19 @@ LEVELS_SPEC = [
         Collectible('crab', 2120, 150),
         DangerWall(2150, 250),
 
-        Collectible('crab', 2800, height_from_bottom(150)),
-        Collectible('crab', 2800, height_from_bottom(50)),
-        DangerWall(2800, 0),
+        Collectible('crab', 2350, 50),
+        Collectible('crab', 2350, 150),
+        Collectible('crab', 2350, 250),
+        Collectible('crab', 2350, 350),
+        Collectible('crab', 2500, 50),
+        Collectible('crab', 2500, 150),
+        Collectible('crab', 2500, 250),
+        Collectible('crab', 2500, 350),
+        DangerWall(2650, 250),
+
+        Collectible('crab', 3200, height_from_bottom(150)),
+        Collectible('crab', 3200, height_from_bottom(50)),
+        DangerWall(3200, 0),
 
         Garden(3600),
     ],
